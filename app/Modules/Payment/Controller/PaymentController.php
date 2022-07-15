@@ -9,7 +9,13 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-
+    /**
+     * Criar novo cupom de desconto
+     *
+     * @bodyParam  name string  required Nome do cupom de desconto
+     * @bodyParam  value int  required  Valor do cupom
+     * @bodyParam status int  required  status do cupom 1 - ativo e 0 - desativado Example:1
+     */
     public function create(Request $request){
 
         $this->validate($request, [

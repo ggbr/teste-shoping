@@ -10,6 +10,12 @@ use App\Modules\Purchase\Service\CartService;
 class CartController extends Controller
 {
 
+    /**
+     * Criar novo carrinho de compra
+     *
+     * @bodyParam  email string  Email do cliente, pode ser null Example:joao@gmail.com
+     * @bodyParam  status int  required  status do carrinho 
+     */
     public function createNewCart(Request $request){
 
         $email     = $request->input('email');
@@ -24,6 +30,15 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * Adiciona um novo item no carrinho
+     * 
+     * Se o produto adicionado já estiver no carrinho, ira ser acresentado a quantidade no carrinho
+     *
+     * @bodyParam  cart_id int  Id do carrinho
+     * @bodyParam  product_id int  Id do produto
+     * @bodyParam  quantity int  quantidade de produtos adicionados
+     */
     public function addItemInCart(Request $request){
 
         $this->validate($request, [
@@ -45,10 +60,16 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * Remove um produto do carrinho
+     * 
+     * @bodyParam  cart_id int  Id do carrinho
+     * @bodyParam  product_id int  Id do produto
+     */
     public function removeItenInCart(Request $request){
         $this->validate($request, [
             'cart_id' => 'required',
-            'item_id' => 'required',
+            'product_id' => 'required',
         ]);
 
         $cartId      = $request->input('cart_id');
@@ -63,6 +84,10 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * Busca os dados do Carrinho
+     * @urlParam id integer required  Id do carrinho.
+     */
     public function getCart(int $id){
         try{
             return CartService::getCart($id);
@@ -73,6 +98,12 @@ class CartController extends Controller
         }
     }
 
+
+    /**
+     * Retira todos os produtos do Carrinho
+     * 
+     * @bodyParam  id int  Id do carrinho
+     */
     public function clearAllItensInCart(int $id){
         try{
             return CartService::clearAllItensInCart($id);
@@ -83,6 +114,13 @@ class CartController extends Controller
         }
     }
 
+
+    /**
+     * Adiciona um cupom de desconto no carrinho
+     * 
+     * @bodyParam  cart_id int  Id do carrinho
+     * @bodyParam  payment_id int  Id do cupom
+     */
     public function addPayment(Request $request){
 
         $this->validate($request, [

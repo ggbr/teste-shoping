@@ -9,7 +9,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-
+    /**
+     * Cria novo produto
+     *
+     * @bodyParam  name string  required Nome do produto
+     * @bodyParam  price int  required  Valor do produto
+     * @bodyParam  status int  required  status do cupom 1 - ativo e 0 - desativado Example:1
+     * @bodyParam  inventory int  required  quantidade de produtos em estoque Example:1
+     */
     public function create(Request $request)
     {
 
