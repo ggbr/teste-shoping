@@ -6,7 +6,6 @@ install:
 	sudo chmod 777 -R ./storage
 	sleep 10
 	docker-compose exec webserver sh -c "php artisan migrate"
-	docker-compose exec webserver sh -c "php artisan passport:client --personal --name user"
 restart:
 	docker-compose stop
 	docker-compose up -d
