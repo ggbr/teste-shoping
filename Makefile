@@ -20,5 +20,5 @@ remove:
 	docker-compose rm -f
 
 test:
-	docker-compose exec webserver sh -c "./vendor/bin/phpunit"
+	docker-compose exec webserver sh -c "php artisan test"
 

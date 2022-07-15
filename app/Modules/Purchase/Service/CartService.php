@@ -80,6 +80,7 @@ class CartService
 
         $cart->clearCart();
 
+        return $cart;
     }
 
 

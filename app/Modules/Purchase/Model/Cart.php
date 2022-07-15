@@ -52,17 +52,22 @@ class Cart extends Model
         foreach($this->itens as $item){
             // aqui eu não estou fazendo uma query nova mas sim filtrando os dados da query antiga
             // isso evita o bug do N+1
-            $product = $this->products->where('id', $item->id)->first();
+            if($this->products != null){
 
-            $data = [
-                "id"        => $product->id,
-                "name"      => $product->name,
-                "price"     => $item->price,
-                "quantity"  => $item->quantity,
-                "toral"     => $item->getTotal(),
-            ];
+                $product = $this->products->where('id', $item->id)->first();
+    
+                $data = [
+                    "id"        => $product->id,
+                    "name"      => $product->name,
+                    "price"     => $item->price,
+                    "quantity"  => $item->quantity,
+                    "toral"     => $item->getTotal(),
+                ];
+                array_push($itens, $data);
+            }
+
             $invoiceTotal = $invoiceTotal + $item->getTotal();
-            array_push($itens, $data);
+
         }
 
         return [
@@ -88,12 +93,26 @@ class Cart extends Model
     }
 
     public function getItens(){
-        $this->itens = ItemCart::where('cart_id', $this->id)->get();
+        $itens = ItemCart::where('cart_id', $this->id)->get();
+
+        if(is_null($itens)){
+            $itens = [];
+        }
+
+        $this->itens = $itens;
+
         return $this->itens;
     }
 
     public function getPayments(){
-        $this->payments = PaymentCart::where('cart_id', $this->id)->get();
+        $payments = PaymentCart::where('cart_id', $this->id)->get();
+
+        if(is_null($payments)){
+            $payments = [];
+        }
+
+        $this->payments = $payments;
+
         return $this->payments;
     }
 
@@ -103,7 +122,14 @@ class Cart extends Model
             array_push($list_itens, $item->id);
         }
 
-        $this->products =  Product::find($list_itens);
+        $products =  Product::find($list_itens);
+
+        if(is_null($products)){
+            $products = [];
+        }
+
+        $this->products =  $products;
+
         return $this->products;
     }
 
@@ -116,7 +142,7 @@ class Cart extends Model
             array_push($list_itens, $item->id);
         }
 
-        ItemCart::where('cart_id', $this->id)->whereIn('id', $list_itens)->get();
+        ItemCart::where('cart_id', $this->id)->whereIn('id', $list_itens)->delete();
 
     }
 
