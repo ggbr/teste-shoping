@@ -1,0 +1,68 @@
+version: "3"
+services:
+  webserver:
+    build:
+        context: .
+    #command: /bin/bash -c "composer install && chmod 777 -R . && php artisan octane:start  --server=roadrunner --host=0.0.0.0 --rpc-port=6001 --port=8000"
+    command: /bin/bash -c " php artisan serve --host=0.0.0.0 --port=8000"
+    ports:
+       - "80:8000"
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: local
+      APP_KEY: base64:3rnog3KKdUAmh+IbdOIqFFhtECAqaurl/pEg9qY3inc=
+      APP_DEBUG: 1
+      APP_URL: http://localhost
+      LOG_CHANNEL: stack
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: data
+      DB_USERNAME: root
+      DB_PASSWORD: tiger
+      CACHE_DRIVER: file
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: file
+      SESSION_LIFETIME: 120
+      REDIS_HOST: redis
+      REDIS_PASSWORD: 1234
+      REDIS_PORT: 6379
+    volumes:
+      - .:/var/www/html
+      - ./php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - default
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: tiger
+      MYSQL_DATABASE: data
+    networks:
+      - default
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - redis
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - '8081:80'
+    volumes:
+      - /sessions
+    networks:
+      - default
+  redis:
+    image: redis
+    command: redis-server --requirepass 1234
+    environment:
+    - ALLOW_EMPTY_PASSWORD=yes
+    - REDIS_PASSWORD=1234
+    networks:
+      - default
+
+networks:
+  default:
+
